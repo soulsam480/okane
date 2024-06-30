@@ -1,9 +1,15 @@
 import app/router
 import gleam/erlang/process
 import mist
+import radiate
 import wisp
 
 pub fn main() {
+  let _ =
+    radiate.new()
+    |> radiate.add_dir(".")
+    |> radiate.start()
+
   // This sets the logger to print INFO level logs, and other sensible defaults
   // for a web application.
   wisp.configure_logger()
@@ -21,5 +27,6 @@ pub fn main() {
 
   // The web server runs in new Erlang process, so put this one to sleep while
   // it works concurrently.
+
   process.sleep_forever()
 }

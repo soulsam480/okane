@@ -7,8 +7,9 @@ pub fn main() {
   gleeunit.main()
 }
 
-pub fn hello_world_test() {
-  let response = router.handle_request(testing.get("/", []))
+pub fn get_home_page_test() {
+  let request = testing.get("/", [])
+  let response = router.handle_request(request)
 
   response.status
   |> should.equal(200)
@@ -18,5 +19,31 @@ pub fn hello_world_test() {
 
   response
   |> testing.string_body
-  |> should.equal("<h1>Hello, Joe!</h1>")
+  |> should.equal("Welcome to Okane")
+}
+
+pub fn post_home_page_test() {
+  let request = testing.post("/", [], "a body")
+  let response = router.handle_request(request)
+
+  response.status
+  |> should.equal(405)
+}
+
+pub fn page_not_found_test() {
+  let request = testing.get("/nothing-here", [])
+  let response = router.handle_request(request)
+
+  response.status
+  |> should.equal(404)
+}
+
+pub fn page_session_show_test() {
+  let request = testing.get("/session", [])
+
+  let response = router.handle_request(request)
+
+  response.status |> should.equal(200)
+
+  response |> testing.string_body |> should.equal("Welcome Okane")
 }
