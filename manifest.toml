@@ -3,6 +3,7 @@
 
 packages = [
   { name = "birl", version = "1.7.1", build_tools = ["gleam"], requirements = ["gleam_stdlib", "ranger"], otp_app = "birl", source = "hex", outer_checksum = "5C66647D62BCB11FE327E7A6024907C4A17954EF22865FE0940B54A852446D01" },
+  { name = "dot_env", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "simplifile"], otp_app = "dot_env", source = "hex", outer_checksum = "E7B84DC7B579553AF3B9F0A03B2F8DDB9B44521F553CCFBE633AA595C27F1A05" },
   { name = "exception", version = "2.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "exception", source = "hex", outer_checksum = "F5580D584F16A20B7FCDCABF9E9BE9A2C1F6AC4F9176FA6DD0B63E3B20D450AA" },
   { name = "filepath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "EFB6FF65C98B2A16378ABC3EE2B14124168C0CE5201553DE652E2644DCFDB594" },
   { name = "filespy", version = "0.5.0", build_tools = ["gleam"], requirements = ["fs", "gleam_erlang", "gleam_otp", "gleam_stdlib"], otp_app = "filespy", source = "hex", outer_checksum = "F8E7A9C9CA86D68CCC25491125BFF36BEF7483892D7BEC24AA30D6B540504F06" },
@@ -29,10 +30,11 @@ packages = [
 ]
 
 [requirements]
+dot_env = { version = ">= 1.0.0 and < 2.0.0"}
 gleam_erlang = { version = ">= 0.25.0 and < 1.0.0" }
 gleam_http = { version = ">= 3.6.0 and < 4.0.0" }
 gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
 mist = { version = ">= 1.2.0 and < 2.0.0" }
-radiate = { version = ">= 0.4.0 and < 1.0.0"}
+radiate = { version = ">= 0.4.0 and < 1.0.0" }
 wisp = { version = ">= 0.15.0 and < 1.0.0" }

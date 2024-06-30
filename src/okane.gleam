@@ -1,28 +1,41 @@
 import app/router
+import dot_env
+import dot_env/env
 import gleam/erlang/process
 import mist
 import radiate
 import wisp
 
 pub fn main() {
-  let _ =
-    radiate.new()
-    |> radiate.add_dir(".")
-    |> radiate.start()
+  // load env vars
+  dot_env.load_default()
+
+  // only enable hot-reload in dev
+  case env.get_or("MODE", "dev") {
+    "dev" -> {
+      let _ =
+        radiate.new()
+        |> radiate.add_dir(".")
+        |> radiate.start()
+
+      Nil
+    }
+
+    _ -> Nil
+  }
 
   // This sets the logger to print INFO level logs, and other sensible defaults
   // for a web application.
   wisp.configure_logger()
 
-  // Here we generate a secret key, but in a real application you would want to
-  // load this from somewhere so that it is not regenerated on every restart.
-  let secret_key_base = wisp.random_string(64)
-
   // Start the Mist web server.
   let assert Ok(_) =
-    wisp.mist_handler(router.handle_request, secret_key_base)
+    wisp.mist_handler(
+      router.handle_request,
+      env.get_or("SECRET", wisp.random_string(64)),
+    )
     |> mist.new
-    |> mist.port(8000)
+    |> mist.port(env.get_int_or("PORT", 8000))
     |> mist.start_http
 
   // The web server runs in new Erlang process, so put this one to sleep while
