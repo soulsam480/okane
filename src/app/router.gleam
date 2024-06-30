@@ -1,10 +1,10 @@
-import app/web
-import controllers/home
-import controllers/session
+import app/config
+import app/controllers/home
+import app/controllers/session
 import wisp.{type Request, type Response}
 
 pub fn handle_request(req: Request) -> Response {
-  use req <- web.middleware(req)
+  use req <- config.middleware(req)
 
   // Wisp doesn't have a special router abstraction, instead we recommend using
   // regular old pattern matching. This is faster than a router, is type safe,
