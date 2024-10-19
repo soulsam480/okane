@@ -3,8 +3,8 @@ import app/controllers/home
 import app/controllers/session
 import wisp.{type Request, type Response}
 
-pub fn handle_request(req: Request, _ctx: config.Context) -> Response {
-  use req <- config.middleware(req)
+pub fn handle_request(req: Request, ctx: config.Context) -> Response {
+  use req <- config.middleware(req, ctx)
 
   // Wisp doesn't have a special router abstraction, instead we recommend using
   // regular old pattern matching. This is faster than a router, is type safe,
@@ -15,7 +15,7 @@ pub fn handle_request(req: Request, _ctx: config.Context) -> Response {
     [] -> home.controller(req)
 
     // responds to session
-    ["session"] -> session.controller(req)
+    ["public", "sessions"] -> session.controller(req)
 
     _ -> wisp.not_found()
   }

@@ -9,8 +9,10 @@ licences = ["MIT"]
 repository = { type = "github", user = "soulsam480", repo = "okane" }
 # links = [{ title = "Website", href = "https://gleam.run" }]
 #
-# For a full reference of all the available options, you can have a look at
-# https://gleam.run/writing-gleam/gleam-toml/.
+
+migrations_dir = "./src/app/db/migrations"
+schemafile = "./src/app/db/schema.sql"
+
 
 [dependencies]
 gleam_stdlib = "~> 0.40.0"
@@ -23,6 +25,7 @@ dot_env = "~> 1.2.0"
 glisten = "~> 6.0.0"
 cake = "~> 2.0.1"
 sqlight = "~> 0.9.1"
+feather = ">= 1.2.0 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = "~> 1.0.0"

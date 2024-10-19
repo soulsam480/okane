@@ -1,5 +1,6 @@
 import app/config
 import app/db/connection
+import app/db/migrator
 import app/router
 import dot_env
 import dot_env/env
@@ -30,6 +31,8 @@ pub fn main() {
   // This sets the logger to print INFO level logs, and other sensible defaults
   // for a web application.
   wisp.configure_logger()
+
+  let assert Ok(_) = migrator.migrate_to_latest()
 
   use db <- connection.with_connection()
 
