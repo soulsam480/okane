@@ -5,21 +5,24 @@ version = "1.0.0"
 # your project to the Hex package manager.
 #
 # description = ""
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "username", repo = "project" }
+licences = ["MIT"]
+repository = { type = "github", user = "soulsam480", repo = "okane" }
 # links = [{ title = "Website", href = "https://gleam.run" }]
 #
 # For a full reference of all the available options, you can have a look at
 # https://gleam.run/writing-gleam/gleam-toml/.
 
 [dependencies]
-gleam_stdlib = ">= 0.34.0 and < 2.0.0"
-wisp = ">= 0.15.0 and < 1.0.0"
-gleam_erlang = ">= 0.25.0 and < 1.0.0"
-mist = ">= 1.2.0 and < 2.0.0"
-gleam_http = ">= 3.6.0 and < 4.0.0"
-radiate = ">= 0.4.0 and < 1.0.0"
-dot_env = ">= 1.0.0 and < 2.0.0"
+gleam_stdlib = "~> 0.40.0"
+wisp = "~> 1.2.0"
+gleam_erlang = "~> 0.27.0"
+mist = "~> 3.0.0"
+gleam_http = "~> 3.7.0"
+radiate = "~> 0.4.0"
+dot_env = "~> 1.2.0"
+glisten = "~> 6.0.0"
+cake = "~> 2.0.1"
+sqlight = "~> 0.9.1"
 
 [dev-dependencies]
-gleeunit = ">= 1.0.0 and < 2.0.0"
+gleeunit = "~> 1.0.0"

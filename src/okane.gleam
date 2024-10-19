@@ -1,3 +1,5 @@
+import app/config
+import app/db/connection
 import app/router
 import dot_env
 import dot_env/env
@@ -5,13 +7,14 @@ import gleam/erlang/process
 import mist
 import radiate
 import wisp
+import wisp/wisp_mist
 
 pub fn main() {
   // load env vars
   dot_env.load_default()
 
   // only enable hot-reload in dev
-  case env.get_or("MODE", "dev") {
+  case env.get_string_or("MODE", "dev") {
     "dev" -> {
       let _ =
         radiate.new()
@@ -28,11 +31,15 @@ pub fn main() {
   // for a web application.
   wisp.configure_logger()
 
+  use db <- connection.with_connection()
+
+  let context = config.Context(db: db)
+
   // Start the Mist web server.
   let assert Ok(_) =
-    wisp.mist_handler(
-      router.handle_request,
-      env.get_or("SECRET", wisp.random_string(64)),
+    wisp_mist.handler(
+      router.handle_request(_, context),
+      env.get_string_or("SECRET", wisp.random_string(64)),
     )
     |> mist.new
     |> mist.port(env.get_int_or("PORT", 8000))

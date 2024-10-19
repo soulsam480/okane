@@ -3,7 +3,7 @@ import app/controllers/home
 import app/controllers/session
 import wisp.{type Request, type Response}
 
-pub fn handle_request(req: Request) -> Response {
+pub fn handle_request(req: Request, _ctx: config.Context) -> Response {
   use req <- config.middleware(req)
 
   // Wisp doesn't have a special router abstraction, instead we recommend using

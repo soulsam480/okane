@@ -1,4 +1,9 @@
+import sqlight
 import wisp
+
+pub type Context {
+  Context(db: sqlight.Connection)
+}
 
 /// The middleware stack that the request handler uses. The stack is itself a
 /// middleware function!
