@@ -1,3 +1,2 @@
-src/app/router.gleam
-src/app/hooks/hook.gleam
-src/app/config.gleam
+src/app/db/models/user.gleam
+src/app/db/connection.gleam

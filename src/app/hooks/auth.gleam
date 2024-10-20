@@ -1,6 +1,10 @@
 import app/config
+import app/db/models/user
 import app/lib/response_helpers
 import gleam/http/request
+import gleam/int
+import gleam/iterator
+import gleam/result
 import wisp
 
 pub fn hook_auth(
@@ -11,7 +15,16 @@ pub fn hook_auth(
 
   case header {
     Ok(res) -> {
-      Ok(wisp.ok())
+      let user =
+        res |> int.parse |> result.try(fn(id) { user.find_by_id(id, ctx.db) })
+
+      case user {
+        Ok(u) -> {
+          let user = u |> iterator.from_list |> iterator.at(0)
+          Ok(wisp.ok() |> wisp.string_body("Hello ?" <> user.name))
+        }
+        _ -> Ok(wisp.not_found() |> wisp.string_body("Not found !!!"))
+      }
     }
     _ -> {
       Error(

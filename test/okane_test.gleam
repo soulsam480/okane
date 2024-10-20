@@ -1,5 +1,6 @@
 import app/config
 import app/router
+import gleam/option
 import gleeunit
 import gleeunit/should
 import sqlight
@@ -12,7 +13,7 @@ pub fn main() {
 fn get_connection() -> config.Context {
   use conn <- sqlight.with_connection(":memory:")
 
-  config.Context(conn)
+  config.Context(conn, option.None)
 }
 
 pub fn get_home_page_test() {
