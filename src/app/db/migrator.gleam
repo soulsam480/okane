@@ -3,7 +3,6 @@ import feather
 import feather/migrate as migrator
 
 pub fn migrate_to_latest() {
-
   let assert Ok(migrations) = migrator.get_migrations("src/app/db/migrations")
 
   let assert Ok(connection) =

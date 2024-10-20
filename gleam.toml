@@ -26,6 +26,7 @@ glisten = "~> 6.0.0"
 cake = "~> 2.0.1"
 sqlight = "~> 0.9.1"
 feather = ">= 1.2.0 and < 2.0.0"
+decode = ">= 0.3.0 and < 1.0.0"
 
 [dev-dependencies]
 gleeunit = "~> 1.0.0"

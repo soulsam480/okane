@@ -36,7 +36,7 @@ pub fn main() {
 
   use db <- connection.with_connection()
 
-  let context = config.Context(db: db)
+  let context = config.context_with_connection(db)
 
   // Start the Mist web server.
   let assert Ok(_) =

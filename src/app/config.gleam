@@ -1,34 +1,19 @@
+import app/db/models/user
+import gleam/option.{type Option, None, Some}
 import sqlight
-import wisp
 
+/// this is app context. when user is authenticated, it has user
+/// or db connection only
 pub type Context {
-  Context(db: sqlight.Connection)
+  Context(db: sqlight.Connection, user: Option(user.User))
 }
 
-pub fn middleware(
-  req: wisp.Request,
-  ctx: Context,
-  handle_request: fn(wisp.Request) -> wisp.Response,
-) -> wisp.Response {
-  // `_method` query parameter.
-  //  let req = wisp.method_override(req)
+pub fn context_with_connection(db: sqlight.Connection) {
+  Context(db, None)
+}
 
-  // Log information about the request and response.
-  use <- wisp.log_request(req)
+pub fn set_user(ctx: Context, user: user.User) {
+  let Context(db, ..) = ctx
 
-  // Return a default 500 response if the request handler crashes.
-  use <- wisp.rescue_crashes
-
-  // Rewrite HEAD requests to GET requests and return an empty body.
-  use req <- wisp.handle_head(req)
-
-  case wisp.path_segments(req) {
-    ["auth"] -> {
- 
-
-      // Handle the request!
-      handle_request(req)
-    }
-    _ -> handle_request(req)
-  }
+  Context(db, Some(user))
 }

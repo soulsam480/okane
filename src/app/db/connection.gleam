@@ -4,17 +4,31 @@ import cake/param.{
   type Param, BoolParam, FloatParam, IntParam, NullParam, StringParam,
 }
 import dot_env/env
+import gleam/io
 import gleam/list
+import gleam/string
 import sqlight
+
+// ============= private ============
+
+fn tap_debug(v: a, str: String) -> a {
+  str |> io.print
+  io.debug(v)
+}
+
+fn tap_println(v: a) -> a {
+  v |> string.inspect |> io.println
+  v
+}
+
+// ============= private ============
 
 pub fn get_db_path() -> String {
   env.get_string_or("DATABASE", ":memory:")
 }
 
 pub fn with_connection(conn_fn: fn(sqlight.Connection) -> t) -> t {
-  let connection = sqlight.with_connection(get_db_path(), conn_fn)
-
-  connection
+  sqlight.with_connection(get_db_path(), conn_fn)
 }
 
 pub fn run_query_with(
@@ -23,7 +37,7 @@ pub fn run_query_with(
   model_decoder dcdr,
 ) {
   let prp_stm = sqlite.cake_query_to_prepared_statement(query)
-  let sql = cake.get_sql(prp_stm)
+  let sql = cake.get_sql(prp_stm) |> tap_println
   let params = cake.get_params(prp_stm)
 
   let db_params =
@@ -37,6 +51,7 @@ pub fn run_query_with(
         NullParam -> sqlight.null()
       }
     })
+    |> tap_debug("Params: ")
 
   sql |> sqlight.query(on: db_conn, with: db_params, expecting: dcdr)
 }
