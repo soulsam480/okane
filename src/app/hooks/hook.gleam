@@ -2,10 +2,10 @@ import app/config.{type Context}
 import app/hooks/auth
 import wisp
 
-pub fn middleware(
+pub fn hook_on(
   req: wisp.Request,
   ctx: Context,
-  handle_request: fn(wisp.Request) -> wisp.Response,
+  handle_request: fn(wisp.Request, config.Context) -> wisp.Response,
 ) -> wisp.Response {
   // `_method` query parameter.
   //  let req = wisp.method_override(req)
@@ -21,10 +21,13 @@ pub fn middleware(
 
   case wisp.path_segments(req) {
     ["auth"] -> {
-      let result = auth.hook_auth(req, ctx)
+      let result = auth.hook(req, ctx)
 
-      handle_request(req)
+      case result {
+        Ok(auth_ctx) -> handle_request(req, auth_ctx)
+        Error(resp) -> resp
+      }
     }
-    _ -> handle_request(req)
+    _ -> handle_request(req, ctx)
   }
 }

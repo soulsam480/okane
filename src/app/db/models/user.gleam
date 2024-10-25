@@ -1,14 +1,16 @@
 import app/db/connection
+import app/db/models/helpers
 import cake
+import cake/insert
 import cake/select
 import cake/where
 import decode/zero
 import gleam/dynamic
-import gleam/iterator
+import gleam/list
 import gleam/result
 import sqlight
 
-pub opaque type User {
+pub type User {
   User(
     id: Int,
     name: String,
@@ -31,7 +33,7 @@ fn decode_user(row: dynamic.Dynamic) {
   zero.run(row, decoder)
 }
 
-pub fn find_by_id(id: Int, conn: sqlight.Connection) {
+fn get_user_props() {
   select.new()
   |> select.selects([
     select.col("users.id"),
@@ -41,10 +43,63 @@ pub fn find_by_id(id: Int, conn: sqlight.Connection) {
     select.col("users.created_at"),
   ])
   |> select.from_table("users")
+}
+
+pub fn find_by_id(id: Int, conn: sqlight.Connection) {
+  get_user_props()
   |> select.where(where.col("users.id") |> where.eq(where.int(id)))
   |> select.comment("Find user by id")
   |> select.to_query
   |> cake.to_read_query
   |> connection.run_query_with(conn, decode_user)
-  // |> result.try(fn(res) { res |> iterator.from_list |> iterator.at(0) })
+  |> result.map(fn(users) { users |> list.first })
+  |> result.replace_error(Nil)
+  |> result.flatten
+}
+
+pub fn find_by_email(email: String, conn: sqlight.Connection) {
+  get_user_props()
+  |> select.where(where.col("users.email") |> where.eq(where.string(email)))
+  |> select.comment("Find user by email")
+  |> select.to_query
+  |> cake.to_read_query
+  |> connection.run_query_with(conn, decode_user)
+  |> result.map(fn(users) { users |> list.first })
+  |> result.replace_error(Nil)
+  |> result.flatten
+}
+
+// insert user
+
+pub type InsertableUser {
+  InsertableUser(name: String, email: String, password: String)
+}
+
+fn insertable_user_encoder(user: InsertableUser) {
+  [
+    user.name |> insert.string,
+    user.email |> insert.string,
+    // TODO: implement lib for password hashing here
+    user.password |> insert.string,
+  ]
+  |> helpers.with_created_at_param
+  |> insert.row
+}
+
+pub fn insert_user(
+  insertable user: InsertableUser,
+  connection conn: sqlight.Connection,
+) {
+  insert.from_records(
+    records: [user],
+    table_name: "users",
+    columns: ["name", "email", "password"] |> helpers.with_created_at_column,
+    encoder: insertable_user_encoder,
+  )
+  |> insert.to_query
+  |> cake.to_write_query
+  |> connection.run_query_with(conn, decode_user)
+  |> result.map(fn(users) { users |> list.first })
+  |> result.replace_error(Nil)
+  |> result.flatten
 }

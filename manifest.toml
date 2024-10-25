@@ -42,12 +42,14 @@ packages = [
 ]
 
 [requirements]
+birl = { version = ">= 1.7.1 and < 2.0.0" }
 cake = { version = "~> 2.0.1" }
 decode = { version = ">= 0.3.0 and < 1.0.0" }
 dot_env = { version = "~> 1.2.0" }
 feather = { version = ">= 1.2.0 and < 2.0.0" }
 gleam_erlang = { version = "~> 0.27.0" }
 gleam_http = { version = "~> 3.7.0" }
+gleam_json = { version = ">= 2.0.0 and < 3.0.0" }
 gleam_stdlib = { version = "~> 0.40.0" }
 gleeunit = { version = "~> 1.0.0" }
 glisten = { version = "~> 6.0.0" }
