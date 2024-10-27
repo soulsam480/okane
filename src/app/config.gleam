@@ -8,8 +8,8 @@ pub type Context {
   Context(db: sqlight.Connection, user: Option(user.User))
 }
 
-pub fn context_with_connection(db: sqlight.Connection) {
-  Context(db, None)
+pub fn acquire_context(db: sqlight.Connection, run: fn(Context) -> a) -> a {
+  run(Context(db, None))
 }
 
 pub fn set_user(ctx: Context, user: user.User) {

@@ -67,7 +67,11 @@ fn handle_register(req: Request, ctx: config.Context) {
       let my_user = user.insert_user(params, ctx.db)
 
       case my_user {
-        Error(_) -> wisp.internal_server_error()
+        Error(e) -> {
+          wisp.log_error(e.message)
+
+          wisp.internal_server_error()
+        }
 
         Ok(new_user) -> {
           let user_obj =

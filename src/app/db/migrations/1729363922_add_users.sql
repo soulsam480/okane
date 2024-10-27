@@ -1,6 +1,6 @@
 -- users
 CREATE TABLE users (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   email TEXT UNIQUE,
   created_at TEXT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE users (
 
 -- groups
 CREATE TABLE groups (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   created_at TEXT NOT NULL,
   deleted_at TEXT

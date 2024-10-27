@@ -27,8 +27,8 @@ pub fn get_db_path() -> String {
   env.get_string_or("DATABASE", ":memory:")
 }
 
-pub fn with_connection(conn_fn: fn(sqlight.Connection) -> t) -> t {
-  sqlight.with_connection(get_db_path(), conn_fn)
+pub fn with_connection(run: fn(sqlight.Connection) -> t) -> t {
+  sqlight.with_connection(get_db_path(), run)
 }
 
 pub fn run_query_with(

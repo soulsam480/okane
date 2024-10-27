@@ -1,5 +1,6 @@
 import app/db/connection
 import app/db/models/helpers
+import app/lib/generic_error
 import cake
 import cake/insert
 import cake/select
@@ -35,6 +36,7 @@ fn decode_user(row: dynamic.Dynamic) {
 
 fn get_user_props() {
   select.new()
+  |> select.from_table("users")
   |> select.selects([
     select.col("users.id"),
     select.col("users.name"),
@@ -42,7 +44,6 @@ fn get_user_props() {
     select.col("users.password"),
     select.col("users.created_at"),
   ])
-  |> select.from_table("users")
 }
 
 pub fn find_by_id(id: Int, conn: sqlight.Connection) {
@@ -96,10 +97,13 @@ pub fn insert_user(
     columns: ["name", "email", "password"] |> helpers.with_created_at_column,
     encoder: insertable_user_encoder,
   )
+  |> insert.returning(["name", "email", "password", "id"])
   |> insert.to_query
   |> cake.to_write_query
   |> connection.run_query_with(conn, decode_user)
-  |> result.map(fn(users) { users |> list.first })
-  |> result.replace_error(Nil)
+  |> result.map_error(fn(e) { generic_error.new(e) })
+  |> result.map(fn(users) {
+    users |> list.first |> result.replace_error(generic_error.new("empty user"))
+  })
   |> result.flatten
 }

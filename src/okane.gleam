@@ -5,6 +5,7 @@ import app/router
 import dot_env
 import dot_env/env
 import gleam/erlang/process
+import gleam/io
 import mist
 import radiate
 import wisp
@@ -20,6 +21,9 @@ pub fn main() {
       let _ =
         radiate.new()
         |> radiate.add_dir(".")
+        |> radiate.on_reload(fn(_state, path) {
+          io.println("Change in " <> path <> ", reloading!")
+        })
         |> radiate.start()
 
       Nil
@@ -35,8 +39,7 @@ pub fn main() {
   let assert Ok(_) = migrator.migrate_to_latest()
 
   use db <- connection.with_connection()
-
-  let context = config.context_with_connection(db)
+  use context <- config.acquire_context(db)
 
   // Start the Mist web server.
   let assert Ok(_) =
