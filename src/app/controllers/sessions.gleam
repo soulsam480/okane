@@ -1,15 +1,12 @@
 import app/config
 import app/db/models/user
+import app/hooks/auth
 import app/serializers/base
 import app/serializers/user as user_serializer
 import gleam/http
 import gleam/list
 import gleam/result
 import wisp.{type Request, type Response}
-
-const cookie_max_age = 604_800
-
-const cookie_name = "__session"
 
 type LoginParam {
   LoginParam(email: String, password: String)
@@ -54,10 +51,10 @@ fn handle_login(req: Request, ctx: config.Context) -> Response {
           |> wisp.json_body(user_serializer.run(user))
           |> wisp.set_cookie(
             req,
-            cookie_name,
+            auth.cookie_name,
             user.email,
             wisp.Signed,
-            cookie_max_age,
+            auth.cookie_max_age,
           )
         }
 

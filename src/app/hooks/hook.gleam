@@ -21,12 +21,8 @@ pub fn hook_on(
 
   case wisp.path_segments(req) {
     ["auth"] -> {
-      let result = auth.hook(req, ctx)
-
-      case result {
-        Ok(auth_ctx) -> handle_request(req, auth_ctx)
-        Error(resp) -> resp
-      }
+      use auth_ctx <- auth.hook(req, ctx)
+      handle_request(req, auth_ctx)
     }
     _ -> handle_request(req, ctx)
   }
