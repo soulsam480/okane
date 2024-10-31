@@ -7,8 +7,10 @@ import cake/select
 import cake/where
 import decode/zero
 import gleam/dynamic
+import gleam/io
 import gleam/list
 import gleam/result
+import gleam/string
 import sqlight
 
 pub type User {
@@ -22,12 +24,15 @@ pub type User {
 }
 
 fn decode_user(row: dynamic.Dynamic) {
+  row |> string.inspect |> io.println
+
   let decoder = {
-    use id <- zero.field("id", zero.int)
-    use name <- zero.field("name", zero.string)
-    use email <- zero.field("email", zero.string)
-    use password <- zero.field("password", zero.string)
-    use created_at <- zero.field("created_at", zero.string)
+    use id <- zero.field(0, zero.int)
+    use name <- zero.field(1, zero.string)
+    use email <- zero.field(2, zero.string)
+    use password <- zero.field(3, zero.string)
+    use created_at <- zero.field(4, zero.string)
+
     zero.success(User(id:, name:, email:, password:, created_at:))
   }
 
@@ -65,8 +70,10 @@ pub fn find_by_email(email: String, conn: sqlight.Connection) {
   |> select.to_query
   |> cake.to_read_query
   |> connection.run_query_with(conn, decode_user)
-  |> result.map(fn(users) { users |> list.first })
-  |> result.replace_error(Nil)
+  |> result.map(fn(users) {
+    users |> list.first |> result.replace_error(generic_error.new("empty user"))
+  })
+  |> result.map_error(fn(e) { generic_error.new(e) })
   |> result.flatten
 }
 
@@ -91,19 +98,18 @@ pub fn insert_user(
   insertable user: InsertableUser,
   connection conn: sqlight.Connection,
 ) {
-  insert.from_records(
-    records: [user],
-    table_name: "users",
-    columns: ["name", "email", "password"] |> helpers.with_created_at_column,
-    encoder: insertable_user_encoder,
+  use _ <- result.try(
+    insert.from_records(
+      records: [user],
+      table_name: "users",
+      columns: ["name", "email", "password"] |> helpers.with_created_at_column,
+      encoder: insertable_user_encoder,
+    )
+    |> insert.to_query
+    |> cake.to_write_query
+    |> connection.run_query_with(conn, dynamic.dynamic)
+    |> result.map_error(fn(e) { generic_error.new(e) }),
   )
-  |> insert.returning(["name", "email", "password", "id"])
-  |> insert.to_query
-  |> cake.to_write_query
-  |> connection.run_query_with(conn, decode_user)
-  |> result.map_error(fn(e) { generic_error.new(e) })
-  |> result.map(fn(users) {
-    users |> list.first |> result.replace_error(generic_error.new("empty user"))
-  })
-  |> result.flatten
+
+  find_by_email(user.email, conn)
 }

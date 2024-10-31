@@ -1,2 +1,0 @@
-src/app/db/models/user.gleam
-src/app/controllers/sessions.gleam

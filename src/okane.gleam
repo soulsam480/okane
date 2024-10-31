@@ -20,6 +20,7 @@ pub fn main() {
     "dev" -> {
       let _ =
         radiate.new()
+        |> radiate.add_dir("src")
         |> radiate.add_dir(".")
         |> radiate.on_reload(fn(_state, path) {
           io.println("Change in " <> path <> ", reloading!")
