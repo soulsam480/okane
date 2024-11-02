@@ -1,5 +1,6 @@
 import app/config.{type Context}
 import app/hooks/auth
+import app/hooks/ui
 import wisp
 
 pub fn hook_on(
@@ -18,6 +19,10 @@ pub fn hook_on(
 
   // Rewrite HEAD requests to GET requests and return an empty body.
   use req <- wisp.handle_head(req)
+
+  // serve UI
+  // NOTE: this will add user to context if present
+  use ctx <- ui.hook(req, ctx)
 
   case wisp.path_segments(req) {
     ["auth"] -> {

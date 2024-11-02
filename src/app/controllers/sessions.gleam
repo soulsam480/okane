@@ -1,6 +1,6 @@
 import app/config
 import app/db/models/user
-import app/hooks/auth
+import app/lib/auth_cookie
 import app/serializers/base_serializer
 import app/serializers/user_serializer
 import gleam/http
@@ -50,7 +50,7 @@ fn handle_login(req: Request, ctx: config.Context) -> Response {
           // read it when looking for user in auth hook
           wisp.ok()
           |> wisp.json_body(user_serializer.run(user))
-          |> auth.set_cookie(req, user)
+          |> auth_cookie.set_cookie(req, user)
         }
 
         False -> {
@@ -99,7 +99,7 @@ fn handle_register(req: Request, ctx: config.Context) {
     Ok(new_user) -> {
       wisp.ok()
       |> wisp.json_body(user_serializer.run(new_user))
-      |> auth.set_cookie(req, new_user)
+      |> auth_cookie.set_cookie(req, new_user)
     }
   }
 }

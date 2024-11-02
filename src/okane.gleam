@@ -2,12 +2,11 @@ import app/config
 import app/db/connection
 import app/db/migrator
 import app/router
+import dev
 import dot_env
 import dot_env/env
 import gleam/erlang/process
-import gleam/io
 import mist
-import radiate
 import wisp
 import wisp/wisp_mist
 
@@ -15,27 +14,15 @@ pub fn main() {
   // load env vars
   dot_env.load_default()
 
-  // only enable hot-reload in dev
-  case env.get_string_or("MODE", "dev") {
-    "dev" -> {
-      let _ =
-        radiate.new()
-        |> radiate.add_dir("src")
-        |> radiate.add_dir(".")
-        |> radiate.on_reload(fn(_state, path) {
-          io.println("Change in " <> path <> ", reloading!")
-        })
-        |> radiate.start()
-
-      Nil
-    }
-
-    _ -> Nil
-  }
-
   // This sets the logger to print INFO level logs, and other sensible defaults
   // for a web application.
   wisp.configure_logger()
+
+  // only enable hot-reload in dev
+  case env.get_string_or("MODE", "dev") {
+    "dev" -> dev.run()
+    _ -> Nil
+  }
 
   let assert Ok(_) = migrator.migrate_to_latest()
 

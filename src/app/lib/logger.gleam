@@ -1,5 +1,5 @@
 import wisp
 
 pub fn info(message: String) {
-  wisp.log_notice("[Okane]: " <> message)
+  wisp.log_info("[Okane]: " <> message)
 }

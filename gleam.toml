@@ -1,14 +1,18 @@
 name = "okane"
 version = "1.0.0"
 
-# Fill out these fields if you intend to generate HTML documentation or publish
-# your project to the Hex package manager.
-#
-# description = ""
+description = "A bill splitting app"
 licences = ["MIT"]
 repository = { type = "github", user = "soulsam480", repo = "okane" }
 # links = [{ title = "Website", href = "https://gleam.run" }]
-#
+
+[tailwind]
+args = [
+    "--config=tailwind.config.js",
+    "--input=./src/app/css/app.css",
+    "--output=./priv/ui/css/app.css"
+]
+path = "./node_modules/.bin/tailwind"
 
 migrations_dir = "./src/app/db/migrations"
 schemafile = "./src/app/db/schema.sql"
@@ -29,6 +33,8 @@ feather = ">= 1.2.0 and < 2.0.0"
 decode = ">= 0.3.0 and < 1.0.0"
 birl = ">= 1.7.1 and < 2.0.0"
 gleam_json = ">= 2.0.0 and < 3.0.0"
+filespy = ">= 0.5.0 and < 1.0.0"
 
 [dev-dependencies]
 gleeunit = "~> 1.0.0"
+glailglind = ">= 1.1.3 and < 2.0.0"
