@@ -50,13 +50,7 @@ fn handle_login(req: Request, ctx: config.Context) -> Response {
           // read it when looking for user in auth hook
           wisp.ok()
           |> wisp.json_body(user_serializer.run(user))
-          |> wisp.set_cookie(
-            req,
-            auth.cookie_name,
-            user.email,
-            wisp.Signed,
-            auth.cookie_max_age,
-          )
+          |> auth.set_cookie(req, user)
         }
 
         False -> {
@@ -103,7 +97,9 @@ fn handle_register(req: Request, ctx: config.Context) {
     }
 
     Ok(new_user) -> {
-      wisp.ok() |> wisp.json_body(user_serializer.run(new_user))
+      wisp.ok()
+      |> wisp.json_body(user_serializer.run(new_user))
+      |> auth.set_cookie(req, new_user)
     }
   }
 }
