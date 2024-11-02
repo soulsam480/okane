@@ -7,10 +7,8 @@ import cake/select
 import cake/where
 import decode/zero
 import gleam/dynamic
-import gleam/io
 import gleam/list
 import gleam/result
-import gleam/string
 import sqlight
 
 pub type User {
@@ -24,8 +22,6 @@ pub type User {
 }
 
 fn decode_user(row: dynamic.Dynamic) {
-  row |> string.inspect |> io.println
-
   let decoder = {
     use id <- zero.field(0, zero.int)
     use name <- zero.field(1, zero.string)
@@ -98,6 +94,8 @@ pub fn insert_user(
   insertable user: InsertableUser,
   connection conn: sqlight.Connection,
 ) {
+  // TODO: think we can get it done with one query, check that out
+
   use _ <- result.try(
     insert.from_records(
       records: [user],

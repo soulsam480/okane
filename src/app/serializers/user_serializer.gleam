@@ -1,5 +1,5 @@
 import app/db/models/user
-import app/serializers/base
+import app/serializers/base_serializer
 import gleam/json
 
 /// here we can do many things. taking inspirations from rails serializers
@@ -13,5 +13,5 @@ pub fn run(user: user.User) {
     #("name", json.string(user.name)),
     #("created_at", json.string(user.created_at)),
   ])
-  |> base.wrap
+  |> base_serializer.wrap
 }

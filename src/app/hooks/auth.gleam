@@ -1,7 +1,7 @@
 import app/config
 import app/db/models/user
 import app/lib/response_helpers
-import app/serializers/base
+import app/serializers/base_serializer
 import gleam/result
 import wisp
 
@@ -21,13 +21,17 @@ pub fn hook(
   wisp.get_cookie(req, cookie_name, wisp.Signed)
   |> result.map_error(fn(_) {
     response_helpers.unauthorized()
-    |> wisp.json_body(base.serialize_error("Invalid token or token not found"))
+    |> wisp.json_body(base_serializer.serialize_error(
+      "Invalid token or token not found",
+    ))
   })
   |> result.try(fn(user_email) {
     user.find_by_email(user_email, ctx.db)
     |> result.map_error(fn(_) {
       response_helpers.unauthorized()
-      |> wisp.json_body(base.serialize_error("Invalid token or token not found"))
+      |> wisp.json_body(base_serializer.serialize_error(
+        "Invalid token or token not found",
+      ))
     })
   })
   |> result.map(fn(user) { config.set_user(ctx, user) |> handle })

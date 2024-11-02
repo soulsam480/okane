@@ -36,6 +36,8 @@ pub fn run_query_with(
   db_conn: sqlight.Connection,
   model_decoder dcdr,
 ) {
+  io.println("---- query start ----")
+
   let prp_stm = sqlite.cake_query_to_prepared_statement(query)
   let sql = cake.get_sql(prp_stm) |> tap_println
   let params = cake.get_params(prp_stm)
@@ -51,7 +53,7 @@ pub fn run_query_with(
         NullParam -> sqlight.null()
       }
     })
-    |> tap_debug("Params: ")
+    |> tap_debug("with params:: ")
 
   sql |> sqlight.query(on: db_conn, with: db_params, expecting: dcdr)
 }

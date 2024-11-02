@@ -1,11 +1,12 @@
 import app/config
 import app/db/models/user
 import app/hooks/auth
-import app/serializers/base
-import app/serializers/user as user_serializer
+import app/serializers/base_serializer
+import app/serializers/user_serializer
 import gleam/http
 import gleam/list
 import gleam/result
+import gleam/string
 import wisp.{type Request, type Response}
 
 type LoginParam {
@@ -38,7 +39,7 @@ fn handle_login(req: Request, ctx: config.Context) -> Response {
   case user_result {
     Error(_) -> {
       wisp.bad_request()
-      |> wisp.json_body(base.serialize_error(
+      |> wisp.json_body(base_serializer.serialize_error(
         "Either email or password is incorrect!",
       ))
     }
@@ -60,7 +61,7 @@ fn handle_login(req: Request, ctx: config.Context) -> Response {
 
         False -> {
           wisp.bad_request()
-          |> wisp.json_body(base.serialize_error(
+          |> wisp.json_body(base_serializer.serialize_error(
             "Either email or password is incorrect !",
           ))
         }
@@ -95,11 +96,10 @@ fn handle_register(req: Request, ctx: config.Context) {
 
   case my_user {
     Error(e) -> {
-      // TODO: add error specific response messages and codes
-      wisp.log_error(e.message)
+      wisp.log_error("DB: " <> string.inspect(e))
 
       wisp.internal_server_error()
-      |> wisp.json_body(base.serialize_error("Error signing up!"))
+      |> wisp.json_body(base_serializer.serialize_error("Error signing up!"))
     }
 
     Ok(new_user) -> {
@@ -109,9 +109,10 @@ fn handle_register(req: Request, ctx: config.Context) {
 }
 
 pub fn controller(req: Request, ctx: config.Context) -> Response {
-  case wisp.path_segments(req), req.method {
-    ["sessions", "login"], http.Post -> handle_login(req, ctx)
-    ["sessions", "register"], http.Post -> handle_register(req, ctx)
+  case ctx.scoped_segments, req.method {
+    ["login"], http.Post -> handle_login(req, ctx)
+    ["register"], http.Post -> handle_register(req, ctx)
+
     _, _ -> wisp.not_found()
   }
 }
