@@ -46,7 +46,7 @@ fn select_group_query_init() {
   |> select.from_table("groups")
   |> select.selects([
     select.col("groups.id"),
-    select.col("griups.name"),
+    select.col("groups.name"),
     select.col("groups.owner_id"),
     select.col("groups.created_at"),
     select.col("groups.deleted_at"),

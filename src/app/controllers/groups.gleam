@@ -31,6 +31,7 @@ fn handle_create_group(req: wisp.Request, ctx: config.Context) -> wisp.Response 
 
   case group.insert_group(create_group_params, ctx.db) {
     Ok(group) -> wisp.ok() |> wisp.json_body(group_serializer.run(group))
+
     Error(_) ->
       wisp.internal_server_error()
       |> wisp.json_body(base_serializer.serialize_error(
@@ -54,6 +55,7 @@ fn fetch_group_id(
 ) -> wisp.Response {
   case int.parse(group_id) {
     Ok(id) -> handle(id)
+
     Error(_) ->
       wisp.bad_request()
       |> wisp.json_body(base_serializer.serialize_error(
