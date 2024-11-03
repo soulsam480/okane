@@ -1,3 +1,4 @@
+/// dev only scripts
 import app/css/tailwind
 import gleam/list
 import gleam/result

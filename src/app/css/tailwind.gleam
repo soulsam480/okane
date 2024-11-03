@@ -9,7 +9,7 @@ pub fn build() {
 
   let _ =
     [
-      "--config=tailwind.config.js", "--input=./src/app/css/app.css",
+      "--minify", "--config=tailwind.config.js", "--input=./src/app/css/app.css",
       "--output=./priv/ui/css/index.css",
     ]
     |> tailwind.run()
