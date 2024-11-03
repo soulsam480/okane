@@ -8,6 +8,7 @@ repository = { type = "github", user = "soulsam480", repo = "okane" }
 
 [tailwind]
 args = [
+    "--minify",
     "--config=tailwind.config.js",
     "--input=./src/app/css/app.css",
     "--output=./priv/ui/css/app.css"

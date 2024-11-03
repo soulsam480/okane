@@ -31,35 +31,22 @@ fn app_shell(user: option.Option(user.User)) {
   </head>
 
   <body>
-    <div id='app'>
-  <form>
-    <input
-      type='text'
-      placeholder='Type here'
-      className='input w-full max-w-xs'
-    />
-  </form>
-	</div>
+    <div id='app'></div>
   </body>
 
-  <div id='APP_DATA'>",
+  <div id='APP_DATA' style='display: none;'>",
   )
   |> string_builder.append_builder(make_ssr_data(user))
   |> string_builder.append(
     "</div>
-
-  <script type='module'>
-    import sprae from 'https://unpkg.com/sprae/dist/sprae.min.js';
-
-    const container = document.querySelector('#app');
-    const hydrate_el = document.querySelector('#APP_DATA')
-
-    const state = sprae(container, {
-	...JSON.parse(hydrate_el?.textContent ?? '{}')
-	});
-	
-    hydrate_el.remove()
-  </script>
+<script type='importmap'>
+{
+  \"imports\": {
+    \"htm\": \"https://cdn.jsdelivr.net/npm/preact-htm-signals-standalone/dist/standalone.js\"
+  }
+}
+</script>
+  <script type='module' src='/js/boot.js'></script>
 </html>
 ",
   )

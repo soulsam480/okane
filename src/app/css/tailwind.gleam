@@ -30,7 +30,7 @@ pub fn start() {
       let is_path =
         !string.ends_with(path, "index.css")
         && {
-          [".gleam", ".css", ".html"]
+          [".gleam", ".css", ".html", ".js"]
           |> list.any(fn(el) { string.ends_with(path, el) })
         }
 
