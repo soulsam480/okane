@@ -6,6 +6,10 @@ licences = ["MIT"]
 repository = { type = "github", user = "soulsam480", repo = "okane" }
 # links = [{ title = "Website", href = "https://gleam.run" }]
 
+# feather config
+migrations_dir = "./priv/migrations"
+schemafile = "./src/app/db/schema.sql"
+
 [tailwind]
 args = [
     "--minify",
@@ -14,10 +18,6 @@ args = [
     "--output=./priv/ui/css/app.css"
 ]
 path = "./node_modules/.bin/tailwind"
-
-migrations_dir = "./src/app/db/migrations"
-schemafile = "./src/app/db/schema.sql"
-
 
 [dependencies]
 gleam_stdlib = "~> 0.40.0"

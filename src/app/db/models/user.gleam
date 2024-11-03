@@ -7,7 +7,6 @@ import cake/select
 import cake/where
 import decode/zero
 import gleam/dynamic
-import gleam/list
 import gleam/result
 import sqlight
 
@@ -54,9 +53,7 @@ pub fn find_by_id(id: Int, conn: sqlight.Connection) {
   |> select.to_query
   |> cake.to_read_query
   |> connection.run_query_with(conn, decode_user)
-  |> result.map(fn(users) { users |> list.first })
-  |> result.replace_error(Nil)
-  |> result.flatten
+  |> helpers.first
 }
 
 pub fn find_by_email(email: String, conn: sqlight.Connection) {
@@ -66,11 +63,7 @@ pub fn find_by_email(email: String, conn: sqlight.Connection) {
   |> select.to_query
   |> cake.to_read_query
   |> connection.run_query_with(conn, decode_user)
-  |> result.map(fn(users) {
-    users |> list.first |> result.replace_error(generic_error.new("empty user"))
-  })
-  |> result.map_error(fn(e) { generic_error.new(e) })
-  |> result.flatten
+  |> helpers.first
 }
 
 // insert user

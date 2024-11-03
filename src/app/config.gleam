@@ -12,18 +12,26 @@ pub type Context {
   )
 }
 
+/// creates base context with the db connection
 pub fn acquire_context(db: sqlight.Connection, run: fn(Context) -> a) -> a {
   run(Context(db, None, []))
 }
 
 pub fn set_user(ctx: Context, user: user.User) {
-  let Context(db, _, scope) = ctx
-
-  Context(db, Some(user), scope)
+  Context(..ctx, user: Some(user))
 }
 
+/// scope this router context to following path
+/// basically this eliminates the need to pattern match the prefix
+/// e.g.
+/// for a path /auth/users/home -> if auth is already matched -> context can be narrowed to ["users","home"]
 pub fn scope_to(ctx: Context, scoped_segments: List(String)) {
-  let Context(db, user, ..) = ctx
+  Context(..ctx, scoped_segments:)
+}
 
-  Context(db, user, scoped_segments)
+/// get user from context or crash
+/// ! Only intended to be used in places where auth is taken care prior in the chain
+pub fn get_user_or_crash(ctx: Context) {
+  let assert Some(u) = ctx.user
+  u
 }

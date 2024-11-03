@@ -1,4 +1,5 @@
 import app/config
+import app/controllers/groups
 import app/controllers/sessions
 import app/controllers/users
 import app/hooks/hook
@@ -13,6 +14,13 @@ pub fn handle_request(req: Request, ctx: config.Context) -> Response {
 
     ["auth", "users", ..user_segments] ->
       users.controller(req, ctx |> config.scope_to(user_segments))
+
+    ["auth", "groups", ..group_segments] ->
+      groups.controller(
+        req,
+        ctx
+          |> config.scope_to(group_segments),
+      )
 
     _ -> {
       wisp.not_found()
