@@ -3,6 +3,7 @@ import app/hooks/auth
 import app/hooks/ui
 import wisp
 
+/// base hook that applies all hooks to a request
 pub fn hook_on(
   req: wisp.Request,
   ctx: Context,

@@ -1,8 +1,6 @@
-import { $authState } from "../store.js";
+import { $auth_state } from "../store.js";
 import { html } from "htm";
 
-export default function () {
-  return html`
-    <div>Hello ${$authState.value.user.name}! Welcome to Okane.</div>
-  `;
+export function home() {
+  return html`<div>Hello ${$auth_state.value.name}! Welcome to Okane.</div>`;
 }

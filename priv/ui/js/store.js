@@ -1,14 +1,22 @@
-import { signal } from "htm";
+import { signal, effect } from "htm";
 
-export const $hashState = signal(null);
+/**
+ *  @type {import('htm').Signal<string|null>}
+ */
+export const $current_route = signal(null);
 
 window.addEventListener("hashchange", () => {
-  let hash = window.location.hash.replace(/^#/, "");
+  const hash = window.location.hash.replace(/^#/, "");
+
+  if (!$auth_state.peek()) {
+    $current_route.value = "login";
+    return;
+  }
 
   if (hash.length === 0) {
-    $hashState.value = null;
+    $current_route.value = null;
   } else {
-    $hashState.value = hash;
+    $current_route.value = hash;
   }
 });
 
@@ -16,6 +24,15 @@ export function goto(path) {
   window.location.hash = path;
 }
 
-export const $authState = signal({
-  user: null,
+/**
+ *  @type {import('htm').Signal<import('types/models.d.ts').User>}
+ */
+export const $auth_state = signal(null);
+
+effect(() => {
+  if ($auth_state.value) {
+    goto("home");
+  } else {
+    goto("login");
+  }
 });

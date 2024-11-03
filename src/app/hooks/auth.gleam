@@ -22,6 +22,19 @@ fn get_cookie(
   }
 }
 
+/// re-use user from ui hook if present
+/// else move to auth hook
+fn reuse_ui_auth_user(
+  ctx: config.Context,
+  handle: fn(config.Context) -> wisp.Response,
+  next: fn() -> wisp.Response,
+) -> wisp.Response {
+  case ctx.user {
+    option.None -> next()
+    option.Some(_) -> handle(ctx)
+  }
+}
+
 /// session/auth hook
 /// 1. check if cookie is present
 /// 2. find user if there and put it inside context
@@ -31,8 +44,7 @@ pub fn hook(
   ctx: config.Context,
   handle: fn(config.Context) -> wisp.Response,
 ) -> wisp.Response {
-  // TODO: re-use user inside ctx
-
+  use <- reuse_ui_auth_user(ctx, handle)
   use user_email <- get_cookie(req)
 
   user.find_by_email(user_email, ctx.db)

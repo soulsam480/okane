@@ -1,6 +1,6 @@
 import { html } from "htm";
 
-export default function () {
+export function login_form() {
   /**
    * @param {SubmitEvent} event
    */

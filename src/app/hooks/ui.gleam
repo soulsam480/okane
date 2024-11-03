@@ -18,7 +18,9 @@ fn make_ssr_data(user: option.Option(user.User)) {
   |> json.to_string_builder
 }
 
-fn app_shell(user: option.Option(user.User)) {
+/// 1. render app shell html
+/// 2. put session user info inside document
+fn render_app_shell(user: option.Option(user.User)) {
   string_builder.new()
   |> string_builder.append(
     "<!doctype html>
@@ -66,24 +68,24 @@ pub fn hook(
 
   let user_email = auth_cookie.get_cookie(req)
 
-  // TODO: find ways to improve this
   let user =
     user_email
     |> option.to_result(Nil)
     |> result.map(fn(email) {
-      user.find_by_email(email, ctx.db) |> result.replace_error(Nil)
+      user.find_by_email(email, ctx.db) |> result.nil_error
     })
     |> result.flatten
     |> option.from_result
 
+  // 1. render app shell on base. this way we don't need to redirect random URLs to base.
   case wisp.path_segments(req) {
-    [] -> {
-      wisp.ok() |> wisp.html_body(app_shell(user))
-    }
-    _ ->
+    [] -> wisp.ok() |> wisp.html_body(render_app_shell(user))
+    // 2. for rest, just set user to content and proceed
+    _ -> {
       handle(case user {
         option.Some(u) -> config.set_user(ctx, u)
         _ -> ctx
       })
+    }
   }
 }

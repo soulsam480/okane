@@ -22,6 +22,18 @@
 		// Some stricter flags (disabled by default)
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
-		"noPropertyAccessFromIndexSignature": false
-	}
+		"noPropertyAccessFromIndexSignature": false,
+		"paths": {
+			"htm": [
+				"./types/htm.d.ts"
+			],
+			"types/*": [
+				"./types/*"
+			]
+		}
+	},
+	"include": [
+		"./priv/ui/js/*",
+		"./types/*"
+	]
 }
