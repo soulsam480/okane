@@ -1,4 +1,5 @@
 import { html } from "htm";
+import toastify from "toastify-js";
 
 export function login_form() {
   /**
@@ -17,6 +18,12 @@ export function login_form() {
 
     if (response.ok) {
       window.location.reload();
+    } else {
+      toastify({
+        text: "Something went wrong!",
+        gravity: "top",
+        className: "app-toast app-toast--error",
+      }).showToast();
     }
   }
 

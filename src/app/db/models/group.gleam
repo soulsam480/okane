@@ -1,14 +1,14 @@
 import app/db/connection
 import app/db/models/helpers
-import app/db/models/user
 import app/lib/generic_error
+import birl
 import cake
 import cake/insert
 import cake/select
+import cake/update
 import cake/where
 import decode/zero
 import gleam/dynamic
-import gleam/list
 import gleam/option.{type Option}
 import gleam/result
 import sqlight
@@ -31,8 +31,8 @@ fn decode_group(row: dynamic.Dynamic) {
     use id <- zero.field(0, zero.int)
     use name <- zero.field(1, zero.string)
     use owner_id <- zero.field(2, zero.int)
-    use created_at <- zero.field(2, zero.string)
-    use deleted_at <- zero.field(3, zero.optional(zero.string))
+    use created_at <- zero.field(3, zero.string)
+    use deleted_at <- zero.field(4, zero.optional(zero.string))
 
     zero.success(Group(id:, name:, owner_id:, created_at:, deleted_at:))
   }
@@ -96,11 +96,51 @@ pub fn find_by_id(id: Int, conn: sqlight.Connection) {
 pub fn find_groups_of(user_id: Int, conn: sqlight.Connection) {
   select_group_query_init()
   |> select.where(
-    // TODO: query where memberships has user_id = user_id
-    where.or([where.col("groups.owner_id") |> where.eq(where.int(user_id))]),
+    where.and([
+      where.col("groups.deleted_at") |> where.is_null(),
+      // TODO: query where memberships has user_id = user_id
+      where.or([where.col("groups.owner_id") |> where.eq(where.int(user_id))]),
+    ]),
   )
   |> select.to_query
   |> cake.to_read_query
   |> connection.run_query_with(conn, decode_group)
+  |> generic_error.replace
+}
+
+pub type UpdatableGroup {
+  UpdateableGroup(name: String)
+}
+
+pub fn update_by_id(
+  id: Int,
+  updateable: UpdatableGroup,
+  conn: sqlight.Connection,
+) {
+  update.new()
+  |> update.table("groups")
+  |> update.sets(["name" |> update.set_string(updateable.name)])
+  |> update.where(where.col("groups.id") |> where.eq(where.int(id)))
+  |> update.returning(["id", "name", "owner_id", "created_at", "deleted_at"])
+  |> update.to_query
+  |> cake.to_write_query
+  |> connection.run_query_with(conn, decode_group)
+  |> helpers.first
+  |> generic_error.replace
+}
+
+pub fn discard_by_id(id: Int, conn: sqlight.Connection) {
+  update.new()
+  |> update.table("groups")
+  |> update.where(where.col("groups.id") |> where.eq(where.int(id)))
+  |> update.sets([
+    "deleted_at"
+    |> update.set_string(birl.now() |> birl.to_iso8601),
+  ])
+  |> update.returning(["id", "name", "owner_id", "created_at", "deleted_at"])
+  |> update.to_query
+  |> cake.to_write_query
+  |> connection.run_query_with(conn, decode_group)
+  |> helpers.first
   |> generic_error.replace
 }

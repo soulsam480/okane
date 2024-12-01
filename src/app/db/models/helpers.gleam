@@ -19,6 +19,7 @@ pub fn with_created_at_column(columns: List(String)) -> List(String) {
   columns |> list.append([created_at_column_name])
 }
 
+/// returns first item of a list and generic error otherwise
 pub fn first(
   results: Result(List(a), b),
 ) -> Result(a, generic_error.GenericError) {

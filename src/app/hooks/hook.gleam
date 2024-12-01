@@ -26,10 +26,12 @@ pub fn hook_on(
   use ctx <- ui.hook(req, ctx)
 
   case wisp.path_segments(req) {
-    ["auth"] -> {
+    ["auth", ..] -> {
       use auth_ctx <- auth.hook(req, ctx)
       handle_request(req, auth_ctx)
     }
-    _ -> handle_request(req, ctx)
+    _ -> {
+      handle_request(req, ctx)
+    }
   }
 }

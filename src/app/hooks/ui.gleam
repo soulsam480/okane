@@ -8,6 +8,20 @@ import gleam/result
 import gleam/string_builder
 import wisp
 
+fn make_modules() {
+  json.object([
+    #(
+      "htm",
+      json.string(
+        "https://cdn.jsdelivr.net/npm/preact-htm-signals-standalone/dist/standalone.js",
+      ),
+    ),
+    #("tinydate", json.string("https://esm.sh/tinydate@1.3.0")),
+    #("toastify-js", json.string("https://esm.sh/toastify-js@1.12.0")),
+  ])
+  |> json.to_string_builder
+}
+
 fn make_ssr_data(user: option.Option(user.User)) {
   json.object([
     #("user", case user {
@@ -30,6 +44,7 @@ fn render_app_shell(user: option.Option(user.User)) {
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <link rel='stylesheet' href='/css/index.css' />
     <title>Okane | A Bill splitting app</title>
+    <link media='none' onload=\"if(media!='all')media='all'\" href='https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.css' rel='stylesheet'>
   </head>
 
   <body>
@@ -43,10 +58,11 @@ fn render_app_shell(user: option.Option(user.User)) {
     "</div>
 <script type='importmap'>
 {
-  \"imports\": {
-    \"htm\": \"https://cdn.jsdelivr.net/npm/preact-htm-signals-standalone/dist/standalone.js\"
-  }
-}
+  \"imports\":",
+  )
+  |> string_builder.append_builder(make_modules())
+  |> string_builder.append(
+    "}
 </script>
   <script type='module' src='/js/boot.js'></script>
 </html>

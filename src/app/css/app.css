@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.app-toast {
+  @apply alert p-1;
+}
+
+.app-toast--error {
+  @apply alert-error;
+}

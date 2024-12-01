@@ -55,5 +55,13 @@ pub fn run_query_with(
     })
     |> tap_debug("with params:: ")
 
-  sql |> sqlight.query(on: db_conn, with: db_params, expecting: dcdr)
+  // TODO: remove this later
+  let results =
+    sql
+    |> sqlight.query(on: db_conn, with: db_params, expecting: dcdr)
+    |> tap_debug("returned:: ")
+
+  io.println("---- query end ----")
+
+  results
 }
