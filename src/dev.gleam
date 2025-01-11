@@ -1,5 +1,6 @@
 /// dev only scripts
 import app/css/tailwind
+import filepath
 import gleam/list
 import gleam/result
 import gleam/string
@@ -11,9 +12,12 @@ pub fn run() -> Nil {
 
   let _ =
     radiate.new()
-    |> radiate.add_dir("src")
+    // |> radiate.add_dir("src")
     //TODO: handle mac
-    // |> radiate.add_dir(".")
+    |> radiate.add_dir(filepath.join(
+      "/Users/sambitsahoo/",
+      "projects/okane/src",
+    ))
     |> radiate.on_reload(fn(_, path) {
       wisp.log_info(
         "[HOT RELOAD]: "

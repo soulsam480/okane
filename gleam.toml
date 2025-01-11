@@ -20,8 +20,8 @@ args = [
 path = "./node_modules/.bin/tailwind"
 
 [dependencies]
-gleam_stdlib = "~> 0.40.0"
-wisp = "~> 1.2.0"
+gleam_stdlib = ">= 0.40.0"
+wisp = ">= 1.2.0"
 gleam_erlang = "~> 0.27.0"
 mist = "~> 3.0.0"
 gleam_http = "~> 3.7.0"
@@ -35,6 +35,7 @@ decode = ">= 0.3.0 and < 1.0.0"
 birl = ">= 1.7.1 and < 2.0.0"
 gleam_json = ">= 2.0.0 and < 3.0.0"
 filespy = ">= 0.5.0 and < 1.0.0"
+filepath = ">= 1.1.0 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = "~> 1.0.0"

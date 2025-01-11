@@ -1,16 +1,27 @@
+import filepath
 import filespy
 import gleam/list
 import gleam/string
 import tailwind
 import wisp
 
+fn input_file() {
+  filepath.join("/Users/sambitsahoo", "/projects/okane/src/app/css/app.css")
+}
+
+fn output_file() {
+  filepath.join("/Users/sambitsahoo", "/projects/okane/priv/ui/css/index.css")
+}
+
 pub fn build() {
   wisp.log_info("[HOT CSS]: starting tailwind build....")
 
-  let _ =
+  let assert Ok(_) =
     [
-      "--minify", "--config=tailwind.config.js", "--input=./src/app/css/app.css",
-      "--output=./priv/ui/css/index.css",
+      "--minify",
+      "--config=tailwind.config.js",
+      "--input=" <> input_file(),
+      "--output=" <> output_file(),
     ]
     |> tailwind.run()
 
@@ -24,8 +35,14 @@ pub fn start() {
   // 2. watch and rebuild on further changes
   let _ =
     filespy.new()
-    |> filespy.add_dir("./src/app/css")
-    |> filespy.add_dir("./priv/ui")
+    |> filespy.add_dir(filepath.join(
+      "/Users/sambitsahoo",
+      "/projects/okane/src/app/css",
+    ))
+    |> filespy.add_dir(filepath.join(
+      "/Users/sambitsahoo",
+      "/projects/okane/priv/ui",
+    ))
     |> filespy.set_handler(fn(path, event) {
       let is_path =
         !string.ends_with(path, "index.css")
